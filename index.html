@@ -180,13 +180,14 @@
                   <div class="black_bg">
                      <div class="row">
                         <div class="col-md-7 ">
+                           <!-- Início do formulário de envio de email -->
                            <form class="main_form" onsubmit="enviarEmail(event)">
                               <div class="row">
                                  <div class="col-md-12">
                                     <input class="contactus" placeholder="Nome" type="text" name="nome" required>
                                  </div>
                                  <div class="col-md-12">
-                                    <input class="contactus" placeholder="Celular" type="text" name="celular" required>
+                                    <input class="contactus" placeholder="Celular" type="text" name="celular" required id="celular">
                                  </div>
                                  <div class="col-md-12">
                                     <input class="contactus" placeholder="Email" type="email" name="email" required>
@@ -197,38 +198,64 @@
                                  <div class="col-sm-12">
                                     <button type="submit" class="send_btn">Enviar</button>
                                  </div>
-                                 <script>
-                                    (function() {
-                                       emailjs.init("Ger0G7BBugfqm5uiE"); // Substitua pelo seu User ID do EmailJS
-                                    })();
-                              
-                                    function enviarEmail(event) {
-                                       event.preventDefault(); // Impede o envio padrão do formulário
-                              
-                                       const form = event.target;
-                                       const nome = form.nome.value; // Altere para "nome"
-                                       const celular = form.celular.value; // Altere para "celular"
-                                       const email = form.email.value; // Altere para "email"
-                                       const mensagem = form.mensagem.value; // Altere para "mensagem"
-                              
-                                       emailjs.send("service_tijkdnx","template_n8noygv", {
-                                          nome: nome,
-                                          celular: celular,
-                                          email: email,
-                                          mensagem: mensagem
-                                       })
-                                       .then((response) => {
-                                          console.log("Email enviado com sucesso!", response.status, response.text);
-                                          alert("Mensagem enviada com sucesso!");
-                                          form.reset(); // Limpa o formulário após o envio
-                                       }, (error) => {
-                                          console.error("Erro ao enviar email:", error);
-                                          alert("Erro ao enviar a mensagem. Tente novamente.");
-                                       });
-                                    }
-                                 </script>
                               </div>
                            </form>
+                           
+                           <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+                           
+                           <script>
+                              // Inicializa o EmailJS com a chave pública (User ID)
+                              (function() {
+                                 emailjs.init("Ger0G7BBugfqm5uiE"); // Sua chave pública do EmailJS
+                              })();
+                           
+                              // Função para enviar o e-mail
+                              function enviarEmail(event) {
+                                 event.preventDefault(); // Impede o envio padrão do formulário
+                           
+                                 const form = event.target;
+                                 const nome = form.nome.value;
+                                 const celular = form.celular.value;
+                                 const email = form.email.value;
+                                 const mensagem = form.mensagem.value;
+                           
+                                 // Verifique se os dados estão sendo capturados corretamente
+                                 console.log('Dados capturados:', nome, celular, email, mensagem);
+                           
+                                 // Envia os dados para o EmailJS
+                                 emailjs.send("service_tijkdnx", "template_n8noygv", {
+                                    to_name: nome,        // Nome do destinatário (ex: Nome da pessoa que receberá o e-mail)
+                                    from_name: nome,      // Nome de quem está enviando
+                                    nome: nome,           // Nome completo do remetente
+                                    celular: celular,     // Número de celular
+                                    email: email,         // E-mail do remetente
+                                    mensagem: mensagem    // Mensagem enviada no formulário
+                                 })
+                                 .then((response) => {
+                                    console.log("Email enviado com sucesso!", response.status, response.text);
+                                    alert("Email enviado com sucesso!");
+                                    form.reset(); // Limpa o formulário após o envio
+                                 }, (error) => {
+                                    console.error("Erro ao enviar email:", error);
+                                    alert(`Erro ao enviar a mensagem: ${error.text}. Tente novamente.`);
+                                 });
+                              }
+                           
+                              // Função para aplicar a máscara no campo de celular
+                              function aplicarMascaraCelular(event) {
+                                 var input = event.target;
+                                 var value = input.value.replace(/\D/g, ''); // Remove tudo que não for número
+                                 if (value.length <= 10) {
+                                    input.value = value.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
+                                 } else {
+                                    input.value = value.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
+                                 }
+                              }
+                           
+                              // Adiciona o evento de máscara ao campo de celular
+                              document.getElementById('celular').addEventListener('input', aplicarMascaraCelular);
+                           </script>
+                            
                         </div>
                         <div class="col-md-5">
                            <div class="mane_img">
